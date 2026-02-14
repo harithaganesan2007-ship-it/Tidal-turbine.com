@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Controlled Adaptive Tidal Turbine Simulator</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(#021524,#053b50);
+    color:white;
+    text-align:center;
+}
+
+header{
+    padding:20px;
+    background:#012a4a;
+}
+
+h1{
+    color:#00e5ff;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+.section{
+    background:#0a3d62;
+    margin:20px 0;
+    padding:20px;
+    border-radius:10px;
+}
+
+.data{
+    font-size:18px;
+    margin:6px 0;
+    color:#00e5ff;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    margin:5px;
+    cursor:pointer;
+    font-weight:bold;
+    background:#00bcd4;
+}
+
+button:hover{
+    background:#00e5ff;
+}
+
+.turbine-container{
+    position:relative;
+    width:200px;
+    height:200px;
+    margin:30px auto;
+}
+
+.turbine{
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    position:relative;
+    animation: spin linear infinite;
+}
+
+.blade{
+    position:absolute;
+    width:8px;
+    height:80px;
+    background:#00e5ff;
+    top:20px;
+    left:96px;
+    transform-origin:bottom center;
+}
+
+.blade:nth-child(1){ transform:rotate(0deg); }
+.blade:nth-child(2){ transform:rotate(120deg); }
+.blade:nth-child(3){ transform:rotate(240deg); }
+
+@keyframes spin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+
+.status{
+    font-weight:bold;
+    color:#90ee90;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>AI-Controlled Adaptive Tidal Turbine System</h1>
+<p>Interactive Smart Energy Simulator</p>
+</header>
+
+<div class="container">
+
+<!-- Tidal Detection -->
+<div class="section">
+<h2>Step 1: Tidal Flow Detection</h2>
+<div class="data">Water Flow Speed: <span id="flowSpeed">0</span> m/s</div>
+<div class="data">Flow Direction: <span id="flowDirection">--</span></div>
+<div class="data">Turbine RPM: <span id="rpm">0</span></div>
+</div>
+
+<!-- AI Control -->
+<div class="section">
+<h2>Step 2 & 5: AI Control Logic</h2>
+<div class="data">Blade Angle: <span id="bladeAngle">0</span>°</div>
+<div class="data">AI Decision: <span id="aiDecision">Waiting...</span></div>
+</div>
+
+<!-- Turbine Visual -->
+<div class="section">
+<h2>Step 3: Blade Adjustment</h2>
+<div class="turbine-container">
+    <div class="turbine" id="turbine">
+        <div class="blade"></div>
+        <div class="blade"></div>
+        <div class="blade"></div>
+    </div>
+</div>
+</div>
+
+<!-- Power Generation -->
+<div class="section">
+<h2>Step 4: Power Generation</h2>
+<div class="data">Generated Power: <span id="power">0</span> kW</div>
+<div class="data">Efficiency: <span id="efficiency">0</span>%</div>
+<div class="status" id="status">System Ready</div>
+</div>
+
+<button onclick="startSim()">Start</button>
+<button onclick="stopSim()">Stop</button>
+<button onclick="toggleMode()">Toggle Auto/Manual</button>
+
+</div>
+
+<script>
+let interval;
+let autoMode = true;
+
+function startSim(){
+    interval = setInterval(runSystem,1500);
+    document.getElementById("status").innerText = "System Running";
+}
+
+function stopSim(){
+    clearInterval(interval);
+    document.getElementById("status").innerText = "System Stopped";
+}
+
+function toggleMode(){
+    autoMode = !autoMode;
+    document.getElementById("status").innerText =
+        autoMode ? "Auto AI Mode Enabled" : "Manual Mode Enabled";
+}
+
+function runSystem(){
+
+    let flowSpeed = (Math.random()*4+1).toFixed(2);
+    let directions = ["North","South","East","West"];
+    let flowDirection = directions[Math.floor(Math.random()*4)];
+    let rpm = (flowSpeed*120).toFixed(0);
+
+    document.getElementById("flowSpeed").innerText = flowSpeed;
+    document.getElementById("flowDirection").innerText = flowDirection;
+    document.getElementById("rpm").innerText = rpm;
+
+    let bladeAngle;
+    let decision;
+
+    if(autoMode){
+        if(flowSpeed > 3){
+            bladeAngle = 10;
+            decision = "High Flow → Reducing Blade Angle";
+        }else if(flowSpeed < 2){
+            bladeAngle = 35;
+            decision = "Low Flow → Increasing Blade Angle";
+        }else{
+            bladeAngle = 20;
+            decision = "Moderate Flow → Optimal Angle Maintained";
+        }
+    }else{
+        bladeAngle = 25;
+        decision = "Manual Mode → Fixed Blade Angle";
+    }
+
+    document.getElementById("bladeAngle").innerText = bladeAngle;
+    document.getElementById("aiDecision").innerText = decision;
+
+    // Adjust rotation speed
+    document.getElementById("turbine").style.animationDuration =
+        (3/flowSpeed) + "s";
+
+    let power = (flowSpeed * bladeAngle * 1.8).toFixed(2);
+    let efficiency = (85 + (flowSpeed*2)).toFixed(1);
+
+    document.getElementById("power").innerText = power;
+    document.getElementById("efficiency").innerText = efficiency;
+}
+</script>
+
+</body>
+</html>
